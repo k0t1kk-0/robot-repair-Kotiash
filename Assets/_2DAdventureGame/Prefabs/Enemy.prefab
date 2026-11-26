@@ -185,6 +185,7 @@ MonoBehaviour:
   changeTime: 3
   randomAxis: 0
   axisChangeChance: 0.5
+  fixClip: {fileID: 8300000, guid: 4e356d8e36201c14da953082c4d569ab, type: 3}
 --- !u!95 &1172579392832029289
 Animator:
   serializedVersion: 7

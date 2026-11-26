@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -32,6 +33,13 @@ public class PlayerController : MonoBehaviour
     public float timeBetweenLaunches = 0.5f;
     float launchCooldown;
 
+    [Header("Feedback (лабораторна 9)")]
+    public AudioClip hitClip;
+    public AudioClip launchClip;
+    public Color hitFlashColor = new Color(1f, 0.35f, 0.35f);
+    AudioSource audioSource;
+    SpriteRenderer spriteRenderer;
+
     [Header("Dialogue")]
     public InputAction TalkAction;
     private NonPlayerCharacter lastNonPlayerCharacter;
@@ -43,6 +51,8 @@ public class PlayerController : MonoBehaviour
         TalkAction.Enable();
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         // Встановлюємо повне здоров'я на старті
         currentHealth = maxHealth;
@@ -126,6 +136,9 @@ public class PlayerController : MonoBehaviour
             isInvincible = true;
             damageCooldown = timeInvincible;
             animator.SetTrigger("Hit");
+            PlaySound(hitClip);
+            StopCoroutine(nameof(HitFlash));
+            StartCoroutine(nameof(HitFlash));
         }
 
         // Обмежуємо здоров'я в межах [0, maxHealth]
@@ -142,6 +155,7 @@ public class PlayerController : MonoBehaviour
         projectile.Launch(moveDirection, projectileForce);
 
         animator.SetTrigger("Launch");
+        PlaySound(launchClip);
     }
 
     void FindFriend()
@@ -149,6 +163,26 @@ public class PlayerController : MonoBehaviour
         if (TalkAction.WasPressedThisFrame())
         {
             UIHandler.instance.DisplayDialogue(lastNonPlayerCharacter.dialogueText);
+        }
+    }
+
+    // Один звук на подію: шкода щокадру відсікається невразливістю, тому і звук не гуде
+    public void PlaySound(AudioClip clip)
+    {
+        if (clip != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+    }
+
+    IEnumerator HitFlash()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            spriteRenderer.color = hitFlashColor;
+            yield return new WaitForSeconds(0.1f);
+            spriteRenderer.color = Color.white;
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }

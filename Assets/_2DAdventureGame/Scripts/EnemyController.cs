@@ -14,6 +14,9 @@ public class EnemyController : MonoBehaviour
     [Tooltip("Ймовірність змінити вісь при розвороті")]
     public float axisChangeChance = 0.5f;
 
+    [Tooltip("Звук полагодження (лабораторна 9)")]
+    public AudioClip fixClip;
+
     public bool isBroken { get { return broken; } }
 
     Rigidbody2D rigidbody2d;
@@ -91,6 +94,11 @@ public class EnemyController : MonoBehaviour
         broken = false;
         rigidbody2d.simulated = false;
         animator.SetTrigger("Fixed");
+
+        if (fixClip != null)
+        {
+            AudioSource.PlayClipAtPoint(fixClip, Camera.main.transform.position);
+        }
 
         if (UIHandler.instance != null)
         {
