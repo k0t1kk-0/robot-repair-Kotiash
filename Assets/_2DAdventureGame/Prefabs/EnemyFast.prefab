@@ -28,6 +28,16 @@ PrefabInstance:
       propertyPath: changeTime
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 7886605580417226172, guid: 28edf282963a24b4f925c887bcb7f29b,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7886605580417226172, guid: 28edf282963a24b4f925c887bcb7f29b,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 8421406646341896536, guid: 28edf282963a24b4f925c887bcb7f29b,
         type: 3}
       propertyPath: m_LocalPosition.x
