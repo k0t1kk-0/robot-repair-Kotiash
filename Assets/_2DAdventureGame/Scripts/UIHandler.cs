@@ -21,6 +21,10 @@ public class UIHandler : MonoBehaviour
     // Лабораторна 8: залишок часу перемикача
     private Label m_SwitchTimer;
 
+    // Лабораторна 9: стартовий екран — показується лише при першому запуску
+    static bool s_StartShown;
+    private VisualElement m_StartScreen;
+
     private void Awake()
     {
         instance = this;
@@ -56,6 +60,55 @@ public class UIHandler : MonoBehaviour
         m_SwitchTimer.style.paddingRight = 20;
         m_SwitchTimer.style.display = DisplayStyle.None;
         uiDocument.rootVisualElement.Add(m_SwitchTimer);
+
+        if (!s_StartShown)
+        {
+            ShowStartScreen(uiDocument.rootVisualElement);
+        }
+    }
+
+    void ShowStartScreen(VisualElement root)
+    {
+        Time.timeScale = 0f;
+        m_StartScreen = new VisualElement();
+        m_StartScreen.style.position = Position.Absolute;
+        m_StartScreen.style.top = 0; m_StartScreen.style.bottom = 0;
+        m_StartScreen.style.left = 0; m_StartScreen.style.right = 0;
+        m_StartScreen.style.backgroundColor = new Color(0.08f, 0.1f, 0.16f, 0.92f);
+        m_StartScreen.style.alignItems = Align.Center;
+        m_StartScreen.style.justifyContent = Justify.Center;
+
+        var title = new Label("Robot Repair: Затоплений склад");
+        title.style.fontSize = 72;
+        title.style.color = new Color(1f, 0.85f, 0.3f);
+        title.style.unityFontStyleAndWeight = FontStyle.Bold;
+        m_StartScreen.Add(title);
+
+        var goal = new Label("Полагодь усіх зламаних роботів шестернями і не втрать здоров'я.\nСтрілки — рух, C — постріл, X — розмова.");
+        goal.style.fontSize = 34;
+        goal.style.color = Color.white;
+        goal.style.unityTextAlign = TextAnchor.MiddleCenter;
+        goal.style.marginTop = 20; goal.style.marginBottom = 40;
+        m_StartScreen.Add(goal);
+
+        var play = new Button(HideStartScreen) { text = "Грати (Enter)" };
+        play.style.fontSize = 40;
+        play.style.paddingLeft = 40; play.style.paddingRight = 40;
+        play.style.paddingTop = 10; play.style.paddingBottom = 10;
+        m_StartScreen.Add(play);
+
+        root.Add(m_StartScreen);
+    }
+
+    void HideStartScreen()
+    {
+        s_StartShown = true;
+        Time.timeScale = 1f;
+        if (m_StartScreen != null)
+        {
+            m_StartScreen.RemoveFromHierarchy();
+            m_StartScreen = null;
+        }
     }
 
     public void SetSwitchTimer(float secondsLeft)
@@ -77,6 +130,12 @@ public class UIHandler : MonoBehaviour
 
     private void Update()
     {
+        if (m_StartScreen != null && UnityEngine.InputSystem.Keyboard.current != null
+            && UnityEngine.InputSystem.Keyboard.current.enterKey.wasPressedThisFrame)
+        {
+            HideStartScreen();
+        }
+
         if (m_TimerDisplay > 0)
         {
             m_TimerDisplay -= Time.deltaTime;
