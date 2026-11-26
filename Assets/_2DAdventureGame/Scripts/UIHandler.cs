@@ -18,6 +18,9 @@ public class UIHandler : MonoBehaviour
     // More things to try: лічильник «Полагоджено x / N»
     private Label m_RobotCounter;
 
+    // Лабораторна 8: залишок часу перемикача
+    private Label m_SwitchTimer;
+
     private void Awake()
     {
         instance = this;
@@ -39,6 +42,32 @@ public class UIHandler : MonoBehaviour
 
         m_RobotCounter = uiDocument.rootVisualElement.Q<Label>("RobotCounter");
         UpdateRobotCounter();
+
+        m_SwitchTimer = new Label();
+        m_SwitchTimer.name = "SwitchTimer";
+        m_SwitchTimer.style.position = Position.Absolute;
+        m_SwitchTimer.style.top = 110;
+        m_SwitchTimer.style.right = 30;
+        m_SwitchTimer.style.fontSize = 36;
+        m_SwitchTimer.style.color = new Color(1f, 0.85f, 0.3f);
+        m_SwitchTimer.style.unityFontStyleAndWeight = FontStyle.Bold;
+        m_SwitchTimer.style.backgroundColor = new Color(0, 0, 0, 0.45f);
+        m_SwitchTimer.style.paddingLeft = 20;
+        m_SwitchTimer.style.paddingRight = 20;
+        m_SwitchTimer.style.display = DisplayStyle.None;
+        uiDocument.rootVisualElement.Add(m_SwitchTimer);
+    }
+
+    public void SetSwitchTimer(float secondsLeft)
+    {
+        if (m_SwitchTimer == null) return;
+        if (secondsLeft <= 0)
+        {
+            m_SwitchTimer.style.display = DisplayStyle.None;
+            return;
+        }
+        m_SwitchTimer.style.display = DisplayStyle.Flex;
+        m_SwitchTimer.text = "Двері відчинені: " + secondsLeft.ToString("0.0") + " с";
     }
 
     public void SetHealthValue(float percentage)
