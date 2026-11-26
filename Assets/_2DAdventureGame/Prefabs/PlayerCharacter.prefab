@@ -258,6 +258,23 @@ MonoBehaviour:
     m_Flags: 0
   projectileForce: 300
   timeBetweenLaunches: 0.5
+  TalkAction:
+    m_Name: TalkAction
+    m_Type: 1
+    m_ExpectedControlType: 
+    m_Id: 438ef04b-143d-4390-9cdd-9389c5efc949
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 253806bd-f6ed-40d7-affd-321df927632b
+      m_Path: <Keyboard>/x
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: TalkAction
+      m_Flags: 0
+    m_Flags: 0
 --- !u!95 &6362191724216210904
 Animator:
   serializedVersion: 7

@@ -32,10 +32,15 @@ public class PlayerController : MonoBehaviour
     public float timeBetweenLaunches = 0.5f;
     float launchCooldown;
 
+    [Header("Dialogue")]
+    public InputAction TalkAction;
+    private NonPlayerCharacter lastNonPlayerCharacter;
+
     void Start()
     {
         MoveAction.Enable();
         LaunchAction.Enable();
+        TalkAction.Enable();
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
@@ -78,6 +83,29 @@ public class PlayerController : MonoBehaviour
             Launch();
             launchCooldown = timeBetweenLaunches;
         }
+
+        // Промінь: чи дивиться робот на NPC
+        RaycastHit2D hit = Physics2D.Raycast(rigidbody2d.position + Vector2.up * 0.2f,
+            moveDirection, 1.5f, LayerMask.GetMask("NPC"));
+        if (hit.collider != null)
+        {
+            NonPlayerCharacter npc = hit.collider.GetComponent<NonPlayerCharacter>();
+            if (lastNonPlayerCharacter != null && lastNonPlayerCharacter != npc)
+            {
+                lastNonPlayerCharacter.dialogueBubble.SetActive(false);
+            }
+            npc.dialogueBubble.SetActive(true);
+            lastNonPlayerCharacter = npc;
+            FindFriend();
+        }
+        else
+        {
+            if (lastNonPlayerCharacter != null)
+            {
+                lastNonPlayerCharacter.dialogueBubble.SetActive(false);
+                lastNonPlayerCharacter = null;
+            }
+        }
     }
 
     void FixedUpdate()
@@ -102,7 +130,7 @@ public class PlayerController : MonoBehaviour
 
         // Обмежуємо здоров'я в межах [0, maxHealth]
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
-        Debug.Log(currentHealth + "/" + maxHealth);
+        UIHandler.instance.SetHealthValue(currentHealth / (float)maxHealth);
     }
 
     void Launch()
@@ -114,5 +142,13 @@ public class PlayerController : MonoBehaviour
         projectile.Launch(moveDirection, projectileForce);
 
         animator.SetTrigger("Launch");
+    }
+
+    void FindFriend()
+    {
+        if (TalkAction.WasPressedThisFrame())
+        {
+            UIHandler.instance.DisplayDialogue(lastNonPlayerCharacter.dialogueText);
+        }
     }
 }

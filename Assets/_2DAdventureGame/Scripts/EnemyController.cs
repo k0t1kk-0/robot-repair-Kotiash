@@ -14,6 +14,8 @@ public class EnemyController : MonoBehaviour
     [Tooltip("Ймовірність змінити вісь при розвороті")]
     public float axisChangeChance = 0.5f;
 
+    public bool isBroken { get { return broken; } }
+
     Rigidbody2D rigidbody2d;
     Animator animator;
     float timer;
@@ -89,5 +91,10 @@ public class EnemyController : MonoBehaviour
         broken = false;
         rigidbody2d.simulated = false;
         animator.SetTrigger("Fixed");
+
+        if (UIHandler.instance != null)
+        {
+            UIHandler.instance.UpdateRobotCounter();
+        }
     }
 }
